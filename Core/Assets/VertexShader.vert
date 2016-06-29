@@ -10,7 +10,7 @@ varying vec2 uv;
 
 void main()
 {
-    normal = normalize(mat3(FUSEE_ITMV) * fuNormal);
+    normal = normalize(mat3(FUSEE_ITMV[0].xyz, FUSEE_ITMV[1].xyz, FUSEE_ITMV[2].xyz) * fuNormal);
     viewpos = (FUSEE_MV * vec4(fuVertex, 1.0)).xyz;
     uv = fuUV;
     gl_Position = FUSEE_MVP * vec4(fuVertex, 1.0);
