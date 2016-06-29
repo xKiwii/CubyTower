@@ -38,6 +38,8 @@ namespace Fusee.Tutorial.Core
         private float4x4 _sceneScale;
         private bool _keys;
 
+        private float score = 0;
+
 
         // Init is called on startup. 
         public override void Init()
@@ -71,7 +73,7 @@ namespace Fusee.Tutorial.Core
             tower.AddBlock();
 
             var copy1 = AssetStorage.DeepCopy(steinModel);
-            firstTowerBlock = new TowerBlock(copy1, 0, -(Height/2)+tower.GetBlockHeight()+49);
+            firstTowerBlock = new TowerBlock(copy1, 0, -(Height/2)+tower.GetBlockHeight()+50);
 
             
             // Instantiate the first moving TowerBlock
@@ -224,6 +226,13 @@ namespace Fusee.Tutorial.Core
 
             renderList.Add(block2);
             everyFrame.Add(block2);
+        }
+
+        public void AddPointsToScore(float points)
+        {
+            score += points;
+
+            Debug.WriteLine("Dazugewonnene Punkte: " + points + " Neue Punktzahl: "+ score);
         }
 
     }

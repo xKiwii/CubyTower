@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using Fusee.Math.Core;
 using System.Diagnostics;
+using System;
 
 namespace Fusee.Tutorial.Core
 {
@@ -50,7 +51,7 @@ namespace Fusee.Tutorial.Core
 
             transformComponent.Translation = new float3(x, y, z);
             transformComponent.Rotation = new float3(0, 0, 0);
-            transformComponent.Scale = new float3(1, 0.5f, 1);
+            transformComponent.Scale = new float3(Instances.Tower.upperWidth/200, 1, 1);
 
             this.screenWidth = screenWidth;
             this.screenHeight = screenHeight;
@@ -68,7 +69,6 @@ namespace Fusee.Tutorial.Core
             this.y = y;
             this.z = transformComponent.Translation.z;
 
-            transformComponent.Scale = new float3(1, 0.5f, 1);
             transformComponent.Translation = new float3(x, y, z);
 
             isGrounded = true;
@@ -108,13 +108,118 @@ namespace Fusee.Tutorial.Core
                     if (y < towerPosition)
                     {
                         isFalling = false;
-                        Instances.Main.CreateNewBlock();
+                        CheckCollision();
+                        
                     }
                 }
 
                 transformComponent.Translation = new float3(x, y, z);
+                
             }
               
+        }
+
+
+        void CheckCollision()
+        {
+            bool collision = true;
+
+            float rightBound = Instances.Tower.midPoint + Instances.Tower.upperWidth;
+            float leftBound = Instances.Tower.midPoint - Instances.Tower.upperWidth;
+
+            if(x > rightBound || x < leftBound)
+            {
+                collision = false;
+            }
+
+            if (collision)
+            {
+
+                float halfWidth = Instances.Tower.upperWidth / 2;
+                float newWidth;
+                float newMidPoint;
+                float score = 100;
+
+
+                if (x > Instances.Tower.midPoint)
+                {
+
+                    if(x > halfWidth)
+                    {
+                        newWidth = (Instances.Tower.midPoint + halfWidth) - (x - halfWidth);
+                        float overplus = Instances.Tower.upperWidth - newWidth;
+                        newMidPoint = (x - halfWidth) + (newWidth / 2);
+
+                        Debug.WriteLine("Mittelpunkt " + newMidPoint + " Neue Breite: " + newWidth);
+                    }
+                    else
+                    {
+                        //Block liegt rechts Mittelpunkt -- rechts muss was abgeschnitten werden
+                        float overplus = (x + halfWidth) - (Instances.Tower.midPoint + halfWidth);
+                        newWidth = Instances.Tower.upperWidth - overplus;
+                        newMidPoint = x - (overplus / 2);
+
+                        Debug.WriteLine("Mittelpunkt " + newMidPoint + " Neue Breite: " + newWidth);
+                    }
+
+                    score = score - (x - Instances.Tower.midPoint);
+
+                    Instances.Tower.ChangeFutureBlocks(newMidPoint, newWidth);
+                    x = newMidPoint;
+                    transformComponent.Translation = new float3(x, y, z);
+                    transformComponent.Scale = new float3(newWidth/200, 1, 1);
+
+                    
+                }
+
+                else if (x < Instances.Tower.midPoint)
+                {
+                    //Block liegt links vom Mittelpunkt
+
+                    if(x < (Instances.Tower.midPoint - halfWidth))
+                    {
+                        newWidth = (Instances.Tower.midPoint - halfWidth) - (x + halfWidth); //evtl. Fehlerquelle
+                        newWidth = System.Math.Abs(newWidth);
+                        float overplus = Instances.Tower.upperWidth - newWidth;
+                        newMidPoint = (x + halfWidth) - (newWidth / 2);
+
+                        Debug.WriteLine("Mittelpunkt " + newMidPoint + " Neue Breite: " + newWidth);
+                    }
+                    else
+                    {
+                        float overplus = (x - halfWidth) - (Instances.Tower.midPoint - halfWidth);
+                        newWidth = Instances.Tower.upperWidth + overplus;
+                        newMidPoint = x - (overplus / 2);
+
+                        Debug.WriteLine("Mittelpunkt " + newMidPoint + " Neue Breite: " + newWidth);
+                    }
+
+                    score = score - (Instances.Tower.midPoint - x);
+
+                    Instances.Tower.ChangeFutureBlocks(newMidPoint, newWidth);
+                    x = newMidPoint;
+                    transformComponent.Translation = new float3(x, y, z);
+                    transformComponent.Scale = new float3(newWidth / 200, 1, 1);
+                }
+                else if (x == Instances.Tower.midPoint)
+                {
+                    //Liegt direkt drauf- Super!
+                }
+
+
+                Instances.Main.AddPointsToScore(score);
+            }
+            
+
+            if (collision)
+            {
+                Instances.Main.CreateNewBlock();
+            }
+            else
+            {
+                //GameOver Logic
+            }
+            
         }
     }
 }

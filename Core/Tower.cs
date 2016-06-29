@@ -14,7 +14,7 @@ namespace Fusee.Tutorial.Core
         public float upperWidth = 200;
 
         private int countBlocks;
-        private float blockHeight = 30;
+        private float blockHeight = 25;
 
 
         public Tower(int lowerScreenHeight)
@@ -49,9 +49,10 @@ namespace Fusee.Tutorial.Core
             return countBlocks;
         }
 
-        public void ChangeMidPoint(float midPoint)
+        public void ChangeFutureBlocks(float midPoint, float newWidth)
         {
             this.midPoint = midPoint;
+            this.upperWidth = newWidth;
         }
 
     }

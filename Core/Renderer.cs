@@ -89,7 +89,7 @@ namespace Fusee.Tutorial.Core
         [VisitMethod]
         void OnMaterial(MaterialComponent material)
         {
-            if (CurrentNode.Name.Contains("Würfel"))
+            if (CurrentNode.Name.Contains("block"))
             {
                 RC.SetShaderParamTexture(TextureParam, _leavesTexture);
                 RC.SetShaderParam(TexMixParam, 1.0f);
