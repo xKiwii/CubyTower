@@ -17,6 +17,7 @@ namespace Fusee.Tutorial.Core
         private Renderer _renderer;
         private float4x4 _projection;
         private Camera _camera;
+        private GUI _gui;
 
         private Tower tower;
         private TowerBlock firstTowerBlock;
@@ -44,20 +45,32 @@ namespace Fusee.Tutorial.Core
             _renderer = new Renderer(RC);
             _sceneScale = float4x4.CreateScale(0.1f);
             _camera = new Camera();
+            _gui = new GUI();
 
             Instances.Main = this;
             Instances.Renderer = _renderer;
             Instances.Camera = _camera;
+            Instances.GUI = _gui;
 
-            
+            _gui.Init();
 
 
             // Instantiate the enviroment
 
-            SceneContainer environmentModel = AssetStorage.Get<SceneContainer>("plane2.fus");
-            var environment = new SceneObject(environmentModel);
-            environment.transformComponent.Translation.y = -300;
-            environment.transformComponent.Scale.x = 4;
+
+         SceneContainer environmentModel = AssetStorage.Get<SceneContainer>("plane2.fus");
+         var environment = new SceneObject(environmentModel);
+         environment.transformComponent.Translation.y = -400;
+         //environment.transformComponent.Translation.z = 300;
+         environment.transformComponent.Scale.x = 5;
+         //environment.transformComponent.Scale.z = 1.5f;
+
+           SceneContainer himmelModel = AssetStorage.Get<SceneContainer>("himmel.fus");
+              var hintergrund = new SceneObject(himmelModel);
+              hintergrund.transformComponent.Translation.z = 1300;
+              hintergrund.transformComponent.Scale.x = 1.5f;
+              hintergrund.transformComponent.Scale.y = 1.5f;
+
 
 
             //Instantiate Tower ans his first TowerBlock
@@ -75,13 +88,16 @@ namespace Fusee.Tutorial.Core
             // Instantiate the first moving TowerBlock
             var copy2 = AssetStorage.DeepCopy(steinModel);
             firstMovingBlock = new TowerBlock(copy2,  Width, Height, 10.0f);
-            
+
 
 
             // Add everything to render
+            renderList.Add(hintergrund);
+            renderList.Add(environment);
             renderList.Add(firstMovingBlock);
             renderList.Add(firstTowerBlock);
-            renderList.Add(environment);
+         
+            
 
             everyFrame.Add(firstMovingBlock);
             everyFrame.Add(firstTowerBlock);
@@ -161,9 +177,11 @@ namespace Fusee.Tutorial.Core
             var mtxOffset = _camera.mtxOffset;
             RC.Projection = mtxOffset * _projection;
 
+            _gui._guiHandler.RenderGUI();
             doFrame();
             renderObjects();
-            // Swap buffers: Show the contents of the backbuffer (containing the currently rerndered farame) on the front buffer.
+
+           // Swap buffers: Show the contents of the backbuffer (containing the currently rerndered farame) on the front buffer.
             Present();
 
         }
@@ -184,7 +202,7 @@ namespace Fusee.Tutorial.Core
 
             _projection = float4x4.CreatePerspectiveFieldOfView(M.PiOver4, aspectRatio, 1, 2000);
 
-
+            _gui._guiHandler.Refresh();
             //Give Block new 
         }
 
@@ -224,12 +242,12 @@ namespace Fusee.Tutorial.Core
             everyFrame.Add(block2);
         }
 
-        public void AddPointsToScore(float points)
+     /*public void AddPointsToScore(float points)
         {
             score += points;
 
             Debug.WriteLine("Dazugewonnene Punkte: " + points + " Neue Punktzahl: "+ score);
-        }
+        }*/
 
     }
 }

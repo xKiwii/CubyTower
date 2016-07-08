@@ -10,6 +10,8 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+//using Fusee.Engine.Core.GUI;
+
 
 namespace Fusee.Tutorial.Core
 {
@@ -25,9 +27,12 @@ namespace Fusee.Tutorial.Core
         public float4x4 View;
         private Dictionary<MeshComponent, Mesh> _meshes = new Dictionary<MeshComponent, Mesh>();
         private CollapsingStateStack<float4x4> _model = new CollapsingStateStack<float4x4>();
+
+        private Dictionary<string, ITexture> _textures = new Dictionary<string, ITexture>();
+
         private IShaderParam TexMixParam;
         private IShaderParam TextureParam;
-        private ITexture _leavesTexture;
+        private ShaderProgram _shader;
 
         private Mesh LookupMesh(MeshComponent mc)
         {
@@ -46,29 +51,47 @@ namespace Fusee.Tutorial.Core
             return mesh;
         }
 
+        private ImageData LookUpImage(string imageFile)
+        {
+            ITexture texture;
+            ImageData image = AssetStorage.Get<ImageData>(imageFile);
+            if (!_textures.TryGetValue(imageFile, out texture))
+            {
+                texture = RC.CreateTexture(image);
+                _textures[imageFile] = texture;
+            }
+
+            return image;
+        }
+
         public Renderer(RenderContext rc)
         {
             RC = rc;
             // Initialize the shader(s)
             var vertsh = AssetStorage.Get<string>("VertexShader.vert");
             var pixsh = AssetStorage.Get<string>("PixelShader.frag");
-            var shader = RC.CreateShader(vertsh, pixsh);
-            RC.SetShader(shader);
-            AlbedoParam = RC.GetShaderParam(shader, "albedo");
-            ShininessParam = RC.GetShaderParam(shader, "shininess");
-            SpecFactorParam = RC.GetShaderParam(shader, "specfactor");
-            SpecColorParam = RC.GetShaderParam(shader, "speccolor");
-            AmbientColorParam = RC.GetShaderParam(shader, "ambientcolor");
+            _shader = RC.CreateShader(vertsh, pixsh);
+            RC.SetShader(_shader);
 
-            ImageData leaves = AssetStorage.Get<ImageData>("pflasterstein.jpg");
-            _leavesTexture = RC.CreateTexture(leaves);
-            TextureParam = RC.GetShaderParam(shader, "texture");
-            TexMixParam = RC.GetShaderParam(shader, "texmix");
+            AlbedoParam = RC.GetShaderParam(_shader, "albedo");
+            ShininessParam = RC.GetShaderParam(_shader, "shininess");
+            SpecFactorParam = RC.GetShaderParam(_shader, "specfactor");
+            SpecColorParam = RC.GetShaderParam(_shader, "speccolor");
+            AmbientColorParam = RC.GetShaderParam(_shader, "ambientcolor");
+
+            LookUpImage("Leaves.jpg");
+            LookUpImage("pflasterstein.jpg");
+            LookUpImage("himmel.jpg");
+
+            TextureParam = RC.GetShaderParam(_shader, "texture");
+            TexMixParam = RC.GetShaderParam(_shader, "texmix");
         }
 
 
         protected override void InitState()
         {
+            RC.SetShader(_shader);
+
             _model.Clear();
             _model.Tos = float4x4.Identity;
         }
@@ -84,20 +107,12 @@ namespace Fusee.Tutorial.Core
         [VisitMethod]
         void OnMesh(MeshComponent mesh)
         {
+
             RC.Render(LookupMesh(mesh));
         }
         [VisitMethod]
         void OnMaterial(MaterialComponent material)
         {
-            if (CurrentNode.Name.Contains("block"))
-            {
-                RC.SetShaderParamTexture(TextureParam, _leavesTexture);
-                RC.SetShaderParam(TexMixParam, 1.0f);
-            }
-            else
-            {
-                RC.SetShaderParam(TexMixParam, 0.0f);
-            }
             if (material.HasDiffuse)
             {
                 RC.SetShaderParam(AlbedoParam, material.Diffuse.Color);
@@ -106,6 +121,31 @@ namespace Fusee.Tutorial.Core
             {
                 RC.SetShaderParam(AlbedoParam, float3.Zero);
             }
+
+            if (CurrentNode.Name.Contains("block"))
+            {
+                RC.SetShaderParamTexture(TextureParam, _textures["pflasterstein.jpg"]);
+                RC.SetShaderParam(TexMixParam, 1.0f);
+            }
+
+
+            else if (CurrentNode.Name.Contains("Ebene"))
+            {
+                RC.SetShaderParamTexture(TextureParam, _textures["Leaves.jpg"]);
+                RC.SetShaderParam(TexMixParam, 1.0f);
+            }
+            else if (CurrentNode.Name.Contains("himmel"))
+            {
+                RC.SetShaderParamTexture(TextureParam, _textures["himmel.jpg"]);
+                RC.SetShaderParam(TexMixParam, 1.0f);
+            }
+            else
+            {
+                RC.SetShaderParam(TexMixParam, 0.0f);
+            }
+
+
+
             if (material.HasSpecular)
             {
                 RC.SetShaderParam(ShininessParam, material.Specular.Shininess);

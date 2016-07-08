@@ -207,7 +207,7 @@ namespace Fusee.Tutorial.Core
                 }
 
 
-                Instances.Main.AddPointsToScore(score);
+                Instances.GUI.AddPointsToScore(score);
             }
             
 
