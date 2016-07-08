@@ -23,6 +23,12 @@ namespace Fusee.Tutorial.Core
         private TowerBlock firstTowerBlock;
         private TowerBlock firstMovingBlock;
         private SceneContainer steinModel;
+        private SceneContainer himmelModel;
+        private SceneContainer environmentModel;
+
+        private SceneObject environment;
+        private SceneObject hintergrund;
+
 
 
         private List<SceneObject> renderList = new List<SceneObject>();
@@ -35,7 +41,7 @@ namespace Fusee.Tutorial.Core
         private float4x4 _sceneScale;
         private bool _keys;
 
-        private float score = 0;
+        public float score = 0;
 
 
         // Init is called on startup. 
@@ -52,25 +58,24 @@ namespace Fusee.Tutorial.Core
             Instances.Camera = _camera;
             Instances.GUI = _gui;
 
-            _gui.Init();
+            
 
 
             // Instantiate the enviroment
 
 
-         SceneContainer environmentModel = AssetStorage.Get<SceneContainer>("plane2.fus");
-         var environment = new SceneObject(environmentModel);
-         environment.transformComponent.Translation.y = -400;
-         //environment.transformComponent.Translation.z = 300;
-         environment.transformComponent.Scale.x = 5;
-         //environment.transformComponent.Scale.z = 1.5f;
+            environmentModel = AssetStorage.Get<SceneContainer>("plane2.fus");
+            environment = new SceneObject(environmentModel);
+            environment.transformComponent.Translation.y = -400;
+            environment.transformComponent.Translation.z = 100;
+            environment.transformComponent.Scale.x = 6;
+            environment.transformComponent.Scale.z = 1.5f;
 
-           SceneContainer himmelModel = AssetStorage.Get<SceneContainer>("himmel.fus");
-              var hintergrund = new SceneObject(himmelModel);
-              hintergrund.transformComponent.Translation.z = 1300;
-              hintergrund.transformComponent.Scale.x = 1.5f;
-              hintergrund.transformComponent.Scale.y = 1.5f;
-
+            himmelModel = AssetStorage.Get<SceneContainer>("himmel.fus");
+            hintergrund = new SceneObject(himmelModel);
+            hintergrund.transformComponent.Translation.z = 100;
+            hintergrund.transformComponent.Scale.x = 1;
+            hintergrund.transformComponent.Scale.z = 1;
 
 
             //Instantiate Tower ans his first TowerBlock
@@ -94,13 +99,16 @@ namespace Fusee.Tutorial.Core
             // Add everything to render
             renderList.Add(hintergrund);
             renderList.Add(environment);
-            renderList.Add(firstMovingBlock);
-            renderList.Add(firstTowerBlock);
-         
             
+            renderList.Add(firstTowerBlock);
+            renderList.Add(firstMovingBlock);
+
+
 
             everyFrame.Add(firstMovingBlock);
             everyFrame.Add(firstTowerBlock);
+
+            _gui.Init();
 
 
 
@@ -177,11 +185,12 @@ namespace Fusee.Tutorial.Core
             var mtxOffset = _camera.mtxOffset;
             RC.Projection = mtxOffset * _projection;
 
-            _gui._guiHandler.RenderGUI();
+           
             doFrame();
             renderObjects();
+            _gui._guiHandler.RenderGUI();
 
-           // Swap buffers: Show the contents of the backbuffer (containing the currently rerndered farame) on the front buffer.
+            // Swap buffers: Show the contents of the backbuffer (containing the currently rerndered farame) on the front buffer.
             Present();
 
         }
@@ -242,12 +251,45 @@ namespace Fusee.Tutorial.Core
             everyFrame.Add(block2);
         }
 
-     /*public void AddPointsToScore(float points)
+        public void AddPointsToScore(float points)
         {
             score += points;
-
+            score = (float) System.Math.Round(score);
+            Instances.GUI.AddPointsToScore();
             Debug.WriteLine("Dazugewonnene Punkte: " + points + " Neue Punktzahl: "+ score);
-        }*/
+        }
+
+        public void GameOver()
+        {
+           // RestartGame();
+        }
+
+
+        public void RestartGame()
+        {
+            renderList.Clear();
+            score = 0;
+            AddPointsToScore(0);
+            tower = new Tower(-(Height / 2));
+            Instances.Tower = tower;
+
+            var copy4 = AssetStorage.DeepCopy(steinModel);
+            var copy5 = AssetStorage.DeepCopy(steinModel);
+            firstTowerBlock = new TowerBlock(copy4, 0, -(Height / 2) + tower.GetBlockHeight() + 50);
+
+
+            _camera.mtxOffset = float4x4.CreateTranslation(0, 0, 0);
+
+            renderList.Add(hintergrund);
+            renderList.Add(environment);
+
+            renderList.Add(firstTowerBlock);
+
+            everyFrame.Clear();
+            everyFrame.Add(firstTowerBlock);
+
+            CreateNewBlock();
+        }
 
     }
 }

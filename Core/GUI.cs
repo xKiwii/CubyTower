@@ -8,6 +8,7 @@ using Fusee.Engine.Core;
 using Fusee.Engine.Common;
 using Fusee.Base.Core;
 using System.Diagnostics;
+using Fusee.Base.Common;
 
 namespace Fusee.Tutorial.Core
 {
@@ -23,6 +24,7 @@ namespace Fusee.Tutorial.Core
         private GUIText _guiSubText;
         private GUIText _guiPointsText;
         private GUIText _guiPoints;
+        private GUIImage _guiBackground;
 
         public float score = 0;
         
@@ -48,6 +50,9 @@ namespace Fusee.Tutorial.Core
             _guiFuseeLink.OnGUIButtonLeave += _guiFuseeLink_OnGUIButtonLeave;
             _guiHandler.Add(_guiFuseeLink);
 
+            //_guiBackground = new GUIImage(AssetStorage.Get<ImageData>("himmel.jpg"), -30, -300, -5, 1500, 1000);
+            //_guiHandler.Add(_guiBackground);
+
             _guiPoints = new GUIText("", _guiLatoBlack, 1150, 57);
             _guiHandler.Add(_guiPoints);
 
@@ -68,6 +73,7 @@ namespace Fusee.Tutorial.Core
         void _guiFuseeLink_OnGUIButtonDown(GUIButton sender, GUIButtonEventArgs mea)
         {
             Debug.WriteLine("Button wurde geklickt");
+            Instances.Main.RestartGame();
             //OpenLink("http://fusee3d.org");
         }
 
@@ -81,12 +87,11 @@ namespace Fusee.Tutorial.Core
             throw new NotImplementedException();
         }
 
-        public void AddPointsToScore(float points)
+        public void AddPointsToScore()
         {
-            score += points;
-            _guiPoints.Text = "SCORE" + " "+ score;
+            _guiPoints.Text = "SCORE" + " "+ Instances.Main.score;
             _guiHandler.Refresh();
-            Debug.WriteLine("Dazugewonnene Punkte: " + points + " Neue Punktzahl: " + score);
+            
         }
 
     }

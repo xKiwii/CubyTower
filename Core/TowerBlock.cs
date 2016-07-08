@@ -207,7 +207,7 @@ namespace Fusee.Tutorial.Core
                 }
 
 
-                Instances.GUI.AddPointsToScore(score);
+                Instances.Main.AddPointsToScore(score);
             }
             
 
@@ -217,7 +217,7 @@ namespace Fusee.Tutorial.Core
             }
             else
             {
-                //GameOver Logic
+                Instances.Main.GameOver();
             }
             
         }
