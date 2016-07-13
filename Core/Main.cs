@@ -209,7 +209,7 @@ namespace Fusee.Tutorial.Core
             //_projection = float4x4.CreatePerspectiveFieldOfView(M.PiOver4, aspectRatio, 1, 20000);
 
             _projection = float4x4.CreatePerspectiveFieldOfView(M.PiOver4, aspectRatio, 1, 2000);
-
+            Instances.GUI.Resize();
             _gui._guiHandler.Refresh();
             //Give Block new 
         }
