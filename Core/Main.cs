@@ -111,9 +111,9 @@ namespace Fusee.Tutorial.Core
 
 
             // Set the clear color for the backbuffer
-            //RC.ClearColor = new float4(0.64f, 0.85f, 0.92f, 1);
+            RC.ClearColor = new float4(0.18f, 0.72f, 0.98f, 1);
 
-            RC.ClearColor = new float4(1, 1, 1, 1);
+           // RC.ClearColor = new float4(1, 1, 1, 1);
         }
 
         // RenderAFrame is called once a frame
@@ -178,12 +178,13 @@ namespace Fusee.Tutorial.Core
             var mtxRot = float4x4.CreateRotationZ(0) * float4x4.CreateRotationX(0) * float4x4.CreateRotationY(0);
             //var mtxCam = float4x4.LookAt(0, 20, -80, 0, 0, 0, 0, 1, 0);
             var mtxCam = float4x4.LookAt(0, 20, -80, 0, 0, 0, 0, 1, 0);
-            _renderer.View = mtxCam * mtxRot * _sceneScale;
-            //var mtxOffset = float4x4.CreateTranslation(0, 0, 0);
             var mtxOffset = _camera.mtxOffset;
-            RC.Projection = mtxOffset * _projection;
+            _renderer.View = mtxOffset * mtxCam * mtxRot * _sceneScale;
+            //var mtxOffset = float4x4.CreateTranslation(0, 0, 0);
+            //RC.Projection = mtxOffset * _projection;
+            RC.Projection = _projection;
 
-           
+
             doFrame();
             renderObjects();
             _gui._guiHandler.RenderGUI();
@@ -197,7 +198,7 @@ namespace Fusee.Tutorial.Core
         public override void Resize()
         {
             // Set the new rendering area to the entire new windows size
-            RC.Viewport(0, 0, Width, Height);
+            RC.Viewport(0, 400, Width, Height);
 
             // Create a new projection matrix generating undistorted images on the new aspect ratio.
             var aspectRatio = Width / (float)Height;
@@ -260,7 +261,8 @@ namespace Fusee.Tutorial.Core
 
         public void GameOver()
         {
-           // RestartGame();
+            // RestartGame();
+            Instances.GUI.AddGuiButton();
         }
 
 
@@ -276,7 +278,7 @@ namespace Fusee.Tutorial.Core
             var copy5 = AssetStorage.DeepCopy(steinModel);
             firstTowerBlock = new TowerBlock(copy4, 0, -(Height / 2) + tower.GetBlockHeight() + 50);
 
-
+            _camera.yOffset = 0;
             _camera.mtxOffset = float4x4.CreateTranslation(0, 0, 0);
 
             renderList.Add(hintergrund);

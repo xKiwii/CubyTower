@@ -23,6 +23,7 @@ namespace Fusee.Tutorial.Core
         public FontMap _guiLatoBlack;
         private GUIText _guiSubText;
         private GUIText _guiPointsText;
+        private GUIText _guiGameOverText;
         private GUIText _guiPoints;
         private GUIImage _guiBackground;
 
@@ -41,14 +42,6 @@ namespace Fusee.Tutorial.Core
             fontLato.UseKerning = true;
             _guiLatoBlack = new FontMap(fontLato, 18);
 
-            _guiFuseeLink = new GUIButton("Reset", _guiLatoBlack, 20, 6, 157, 87);
-            _guiFuseeLink.ButtonColor = new float4(0, 0, 0, 0);
-            _guiFuseeLink.BorderColor = new float4(0, 0.6f, 0.2f, 1);
-            _guiFuseeLink.BorderWidth = 0;
-            _guiFuseeLink.OnGUIButtonDown += _guiFuseeLink_OnGUIButtonDown;
-            _guiFuseeLink.OnGUIButtonEnter += _guiFuseeLink_OnGUIButtonEnter;
-            _guiFuseeLink.OnGUIButtonLeave += _guiFuseeLink_OnGUIButtonLeave;
-            _guiHandler.Add(_guiFuseeLink);
 
             //_guiBackground = new GUIImage(AssetStorage.Get<ImageData>("himmel.jpg"), -30, -300, -5, 1500, 1000);
             //_guiHandler.Add(_guiBackground);
@@ -74,6 +67,7 @@ namespace Fusee.Tutorial.Core
         {
             Debug.WriteLine("Button wurde geklickt");
             Instances.Main.RestartGame();
+            RemoveGuiButton();
             //OpenLink("http://fusee3d.org");
         }
 
@@ -94,6 +88,35 @@ namespace Fusee.Tutorial.Core
             
         }
 
+        public void AddGuiButton()
+        {
+
+            _guiGameOverText = new GUIText("Game Over!", _guiLatoBlack, 600, 150);
+            _guiHandler.Add(_guiGameOverText);
+
+            _guiFuseeLink = new GUIButton("Reset", _guiLatoBlack, 500, 300, 300, 87);
+
+            _guiFuseeLink.ButtonColor = new float4(0, 0, 0, 0);
+            _guiFuseeLink.BorderColor = new float4(0, 0.6f, 0.2f, 1);
+            _guiFuseeLink.BorderWidth = 0;
+            _guiFuseeLink.OnGUIButtonDown += _guiFuseeLink_OnGUIButtonDown;
+            _guiFuseeLink.OnGUIButtonEnter += _guiFuseeLink_OnGUIButtonEnter;
+
+            _guiHandler.Add(_guiFuseeLink);
+        }
+
+
+        public void RemoveGuiButton()
+        {
+            _guiHandler.Remove(_guiFuseeLink);
+            _guiHandler.Remove(_guiGameOverText);
+            _guiHandler.Refresh();
+        }
+
+        public void Resize()
+        {
+
+        }
     }
 }
     

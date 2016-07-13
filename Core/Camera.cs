@@ -9,8 +9,9 @@ namespace Fusee.Tutorial.Core
     class Camera
     {
         public float4x4 mtxOffset = float4x4.CreateTranslation(0, 0, 0);
-        private float yOffset = 0;
-        private float speed = -0.093f;
+        public float yOffset = 0;
+        // private float speed = -0.093f;
+        private float speed = -2.8f;
 
         public void CheckCameraPosition(int blocksCount)
         {

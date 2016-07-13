@@ -51,7 +51,7 @@ namespace Fusee.Tutorial.Core
 
             transformComponent.Translation = new float3(x, y, z);
             transformComponent.Rotation = new float3(0, 0, 0);
-            transformComponent.Scale = new float3(Instances.Tower.upperWidth/200, 1, 1);
+            transformComponent.Scale = new float3(Instances.Tower.upperWidth/200, 1, 0.75f);
 
             this.screenWidth = screenWidth;
             this.screenHeight = screenHeight;
@@ -70,6 +70,7 @@ namespace Fusee.Tutorial.Core
             this.z = transformComponent.Translation.z;
 
             transformComponent.Translation = new float3(x, y, z);
+            transformComponent.Scale = new float3(1, 1, 0.75f);
 
             isGrounded = true;
             isActive = false;
@@ -167,7 +168,7 @@ namespace Fusee.Tutorial.Core
                     Instances.Tower.ChangeFutureBlocks(newMidPoint, newWidth);
                     x = newMidPoint;
                     transformComponent.Translation = new float3(x, y, z);
-                    transformComponent.Scale = new float3(newWidth/200, 1, 1);
+                    transformComponent.Scale = new float3(newWidth/200, 1, 0.75f);
 
                     
                 }
@@ -199,7 +200,7 @@ namespace Fusee.Tutorial.Core
                     Instances.Tower.ChangeFutureBlocks(newMidPoint, newWidth);
                     x = newMidPoint;
                     transformComponent.Translation = new float3(x, y, z);
-                    transformComponent.Scale = new float3(newWidth / 200, 1, 1);
+                    transformComponent.Scale = new float3(newWidth / 200, 1, 0.75f);
                 }
                 else if (x == Instances.Tower.midPoint)
                 {
