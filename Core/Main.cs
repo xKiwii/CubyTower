@@ -42,7 +42,7 @@ namespace Fusee.Tutorial.Core
         private bool _keys;
 
         public float score = 0;
-
+        private float speed = 0;
 
         // Init is called on startup. 
         public override void Init()
@@ -57,8 +57,6 @@ namespace Fusee.Tutorial.Core
             Instances.Renderer = _renderer;
             Instances.Camera = _camera;
             Instances.GUI = _gui;
-
-            
 
 
             // Instantiate the enviroment
@@ -243,12 +241,13 @@ namespace Fusee.Tutorial.Core
         {
             tower.AddBlock();
             _camera.CheckCameraPosition(tower.GetCountBlocks());
-
+            speed = Instances.Tower.countBlocks + 5;
             var copy3 = AssetStorage.DeepCopy(steinModel);
-            var block2 = new TowerBlock(copy3, Width, Height, 10.0f);
+            var block2 = new TowerBlock(copy3, Width, Height, speed);
 
             renderList.Add(block2);
             everyFrame.Add(block2);
+
         }
 
         public void AddPointsToScore(float points)

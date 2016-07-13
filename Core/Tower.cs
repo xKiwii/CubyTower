@@ -13,7 +13,7 @@ namespace Fusee.Tutorial.Core
         public float midPoint = 0;
         public float upperWidth = 200;
 
-        private int countBlocks;
+        public int countBlocks;
         private float blockHeight = 25;
 
 

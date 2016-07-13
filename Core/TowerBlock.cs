@@ -138,7 +138,7 @@ namespace Fusee.Tutorial.Core
                 float halfWidth = Instances.Tower.upperWidth / 2;
                 float newWidth;
                 float newMidPoint;
-                float score = 100;
+                float score = 200;
 
 
                 if (x > Instances.Tower.midPoint)

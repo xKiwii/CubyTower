@@ -12,5 +12,6 @@ namespace Fusee.Tutorial.Core
         public static Tower Tower { get; set; }
         public static Camera Camera { get; set; }
         public static GUI GUI { get; set; }
+        public static TowerBlock TowerBlock { get; internal set; }
     }
 }
