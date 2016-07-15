@@ -79,9 +79,9 @@ namespace Fusee.Tutorial.Core
             SpecColorParam = RC.GetShaderParam(_shader, "speccolor");
             AmbientColorParam = RC.GetShaderParam(_shader, "ambientcolor");
 
-            LookUpImage("Leaves.jpg");
+            LookUpImage("justBlack.jpg");
             LookUpImage("pflasterstein.jpg");
-            LookUpImage("himmel.jpg");
+            LookUpImage("blue_poly.jpg");
 
             TextureParam = RC.GetShaderParam(_shader, "texture");
             TexMixParam = RC.GetShaderParam(_shader, "texmix");
@@ -131,12 +131,12 @@ namespace Fusee.Tutorial.Core
 
             else if (CurrentNode.Name.Contains("Ebene"))
             {
-                RC.SetShaderParamTexture(TextureParam, _textures["Leaves.jpg"]);
+                RC.SetShaderParamTexture(TextureParam, _textures["justBlack.jpg"]);
                 RC.SetShaderParam(TexMixParam, 1.0f);
             }
             else if (CurrentNode.Name.Contains("himmel"))
             {
-                RC.SetShaderParamTexture(TextureParam, _textures["himmel.jpg"]);
+                RC.SetShaderParamTexture(TextureParam, _textures["blue_poly.jpg"]);
                 RC.SetShaderParam(TexMixParam, 1.0f);
             }
             else
